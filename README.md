@@ -23,3 +23,14 @@ git clone https://github.com/jefequien/DaBox.git
 cd dabox
 pip install -e .'[dev]'
 ```
+
+# Usage
+
+Start the MediaMTX server.
+```bash
+# On ARM-based Mac
+./scripts/mediamtx_osx.sh
+
+# On Linux
+./scripts/mediamtx_linux.sh
+```

@@ -41,6 +41,7 @@ dev = [
 
 [project.scripts]
 dabox-dev-checks = "dabox.scripts.dev_checks:entrypoint"
+dabox-export-yolov8 = "dabox.scripts.export_yolov8:main"
 
 [tool.setuptools.packages.find]
 include = ["dabox*"]
