@@ -34,3 +34,9 @@ Start the MediaMTX server.
 # On Linux
 ./scripts/mediamtx_linux.sh
 ```
+
+Export Yolov8 model and start the DaBox GUI.
+```bash
+dabox-export-yolov8
+dabox-gui
+```
