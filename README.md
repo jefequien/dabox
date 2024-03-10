@@ -20,7 +20,7 @@ The current recommended way to install `dabox` is from source.
 
 ```bash
 git clone https://github.com/jefequien/DaBox.git
-cd dabox
+cd DaBox
 pip install -e .'[dev]'
 ```
 
