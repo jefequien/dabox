@@ -10,7 +10,7 @@ from rich.style import Style
 
 CONSOLE = console.Console()
 
-TYPE_TESTS = ["pyright .", "mypy ."]
+TYPE_TESTS = ["mypy ."]
 FORMAT_TESTS = ["ruff check --fix .", "ruff format ."]
 
 

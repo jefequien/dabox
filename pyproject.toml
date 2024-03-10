@@ -32,7 +32,6 @@ dependencies = [
 dev = [
     "mypy",
     "pre-commit",
-    "pyright",
     "pytest",
     "ruff",
 ]
@@ -51,18 +50,6 @@ python_version = "3.10"
 ignore_missing_imports = true
 warn_unused_configs = true
 disable_error_code="var-annotated"  # Common source of mypy + numpy false positives.
-
-[tool.pyright]
-include = ["dabox"]
-exclude = [
-    "**/__pycache__",
-]
-defineConstant = { DEBUG = true }
-reportMissingImports = false
-reportMissingTypeStubs = false
-reportPrivateImportUsage = false
-pythonVersion = "3.10"
-pythonPlatform = "Linux"
 
 [tool.ruff]
 lint.select = [

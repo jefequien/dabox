@@ -31,9 +31,9 @@ jobs:
       run: ruff check docs/ dabox/ tests/ --output-format=github
     - name: Run Ruff Formatter
       run: ruff format docs/ dabox/ tests/ --diff
-    - name: Run Pyright
+    - name: Run mypy
       run: |
-        pyright
+        mypy .
     - name: Test with pytest
       run: |
         pytest
