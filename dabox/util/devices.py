@@ -7,14 +7,26 @@ from dabox.util.subprocess import run_command_and_capture_output
 def _get_device_names() -> list[str]:
     if PLATFORM == "linux":
         list_devices_str = run_command_and_capture_output("v4l2-ctl --list-devices")
-        device_names = [
-            x.group().strip() for x in re.finditer(r"/dev(.*?)\n", list_devices_str)
+        all_video_device_names = [
+            x.group().strip()
+            for x in re.finditer(r"/dev/video(.*?)\n", list_devices_str)
         ]
+
+        device_names = []
+        for device_name in all_video_device_names:
+            device_info_str = run_command_and_capture_output(
+                f"v4l2-ctl --device={device_name} --all"
+            )
+            if "Format Video Capture" in device_info_str:
+                device_names.append(device_name)
+
     elif PLATFORM == "osx":
         # Only support one camera on Mac
         device_names = ["0"]
     else:
         raise ValueError(f"Platform not recognized: {PLATFORM}")
+
+    # Verify device
     return device_names
 
 
