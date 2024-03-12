@@ -20,8 +20,6 @@ dependencies = [
     "onnxruntime",
     "opencv-python",
     "rich",
-    "torch",
-    "torchvision",
     "tyro",
     "viser",
 ]

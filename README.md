@@ -11,7 +11,6 @@ Building robots is hard. If we want to live in a future where there are robots e
 ```bash
 conda create --name dabox -y python=3.10
 conda activate dabox
-pip install --upgrade pip setuptools
 ```
 
 ## Install from source
@@ -28,6 +27,5 @@ pip install -e .'[dev]'
 
 Start DaBox!
 ```bash
-dabox-export-yolov8
 dabox-up
 ```
