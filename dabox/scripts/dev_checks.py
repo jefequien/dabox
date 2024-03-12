@@ -3,7 +3,6 @@
 
 import tyro
 from rich import console
-from rich.style import Style
 
 from dabox.util.subprocess import run_command
 
@@ -36,6 +35,7 @@ def run_code_checks(
     for test in tests:
         CONSOLE.line()
         CONSOLE.rule(f"[bold green]Running: {test}")
+        run_command(test)
 
     CONSOLE.line()
     CONSOLE.rule(characters="=")

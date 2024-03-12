@@ -18,7 +18,7 @@ def run_command(command: str, background: bool = False) -> str:
     if background:
         subprocess.Popen(command, shell=True)
         return ""
-    
+
     res = subprocess.run(
         command, shell=True, capture_output=True, text=True, check=False
     )
@@ -29,8 +29,9 @@ def run_command(command: str, background: bool = False) -> str:
     return res.stdout
 
 
-def run_command_and_capture_output(command: str, ) -> str:
-
+def run_command_and_capture_output(
+    command: str,
+) -> str:
     res = subprocess.run(
         command, shell=True, capture_output=True, text=True, check=False
     )

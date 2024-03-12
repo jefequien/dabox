@@ -4,11 +4,11 @@ from pathlib import Path
 
 from rich import console
 
-from dabox.gui.gui import start_gui
 from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR, RTSP_PORT
+from dabox.gui.gui import start_gui
 from dabox.util.cli_logo import cli_logo
 from dabox.util.devices import get_stream_mapping
-from dabox.util.subprocess import run_command, run_command
+from dabox.util.subprocess import run_command
 
 CONSOLE = console.Console()
 
