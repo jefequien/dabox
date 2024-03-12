@@ -3,7 +3,6 @@
 
 import tyro
 from rich import console
-from rich.style import Style
 
 from dabox.util.subprocess import run_command
 
@@ -14,19 +13,15 @@ FORMAT_TESTS = ["ruff check --fix .", "ruff format ."]
 
 
 def run_code_checks(
-    continue_on_fail: bool = False,
     skip_format_checks: bool = False,
     skip_type_checks: bool = False,
 ):
     """Runs formatting, linting, and type checking tests.
 
     Args:
-        continue_on_fail: Whether or not to continue running actions commands if the current one fails.
         skip_format_checks: Whether or not to skip format tests.
         skip_type_checks: Whether or not to skip type tests.
     """
-
-    success = True
 
     assert (
         not skip_format_checks or not skip_type_checks
@@ -40,24 +35,15 @@ def run_code_checks(
     for test in tests:
         CONSOLE.line()
         CONSOLE.rule(f"[bold green]Running: {test}")
-        success = success and run_command(test, continue_on_fail=continue_on_fail)
+        run_command(test)
 
-    if success:
-        CONSOLE.line()
-        CONSOLE.rule(characters="=")
-        CONSOLE.print(
-            "[bold green]:TADA: :TADA: :TADA: ALL CHECKS PASSED :TADA: :TADA: :TADA:",
-            justify="center",
-        )
-        CONSOLE.rule(characters="=")
-    else:
-        CONSOLE.line()
-        CONSOLE.rule(characters="=", style=Style(color="red"))
-        CONSOLE.print(
-            "[bold red]:skull: :skull: :skull: ERRORS FOUND :skull: :skull: :skull:",
-            justify="center",
-        )
-        CONSOLE.rule(characters="=", style=Style(color="red"))
+    CONSOLE.line()
+    CONSOLE.rule(characters="=")
+    CONSOLE.print(
+        "[bold green]:TADA: :TADA: :TADA: ALL CHECKS PASSED :TADA: :TADA: :TADA:",
+        justify="center",
+    )
+    CONSOLE.rule(characters="=")
 
 
 def entrypoint():
