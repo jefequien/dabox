@@ -11,7 +11,6 @@ Building robots is hard. If we want to live in a future where there are robots e
 ```bash
 conda create --name dabox -y python=3.10
 conda activate dabox
-pip install --upgrade pip setuptools
 ```
 
 ## Install from source
@@ -19,8 +18,8 @@ pip install --upgrade pip setuptools
 The current recommended way to install `dabox` is from source.
 
 ```bash
-git clone https://github.com/jefequien/DaBox.git
-cd DaBox
+git clone https://github.com/jefequien/dabox.git
+cd dabox
 pip install -e .'[dev]'
 ```
 
@@ -28,6 +27,5 @@ pip install -e .'[dev]'
 
 Start DaBox!
 ```bash
-dabox-export-yolov8
 dabox-up
 ```

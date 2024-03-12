@@ -2,16 +2,25 @@ import cv2
 import numpy as np
 import onnxruntime
 
+from dabox.env import ROOT_DIR
+from dabox.util.subprocess import run_command
+
 from .utils import draw_detections, multiclass_nms, xywh2xyxy
 
 
 class YOLOv8:
-    def __init__(self, path, conf_thres=0.7, iou_thres=0.5):
+    def __init__(self, model_name, conf_thres=0.7, iou_thres=0.5):
+        self.model_name = model_name
         self.conf_threshold = conf_thres
         self.iou_threshold = iou_thres
 
+        model_path = ROOT_DIR / ".output" / "models" / model_name
+        if not model_path.is_file():
+            model_path.parent.mkdir(parents=True, exist_ok=True)
+            download_url = "https://github.com/jefequien/dabox-research/releases/download/v0.2.0/yolov8n.onnx"
+            run_command(f"wget -nc -O {model_path} {download_url}")
         # Initialize model
-        self.initialize_model(path)
+        self.initialize_model(model_path)
 
     def __call__(self, image):
         return self.detect_objects(image)

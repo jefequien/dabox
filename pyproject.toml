@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dabox"
+name = "dabox-project"
 version = "0.0.0"
-description = "3D visualization + Python"
+description = "The DaBox project"
 readme = "README.md"
 license = { text="MIT" }
 requires-python = ">=3.10"
@@ -20,11 +20,7 @@ dependencies = [
     "onnxruntime",
     "opencv-python",
     "rich",
-    "torch",
-    "torchvision",
     "tyro",
-    "ultralytics",
-    "universal-pathlib",
     "viser",
 ]
 
@@ -37,11 +33,10 @@ dev = [
 ]
 
 [project.urls]
-"GitHub" = "https://github.com/jefequien/DaBox"
+"GitHub" = "https://github.com/jefequien/dabox"
 
 [project.scripts]
 dabox-dev-checks = "dabox.scripts.dev_checks:entrypoint"
-dabox-export-yolov8 = "dabox.scripts.export_yolov8:main"
 dabox-up = "dabox.scripts.up:main"
 
 [tool.setuptools.packages.find]
