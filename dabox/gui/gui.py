@@ -47,7 +47,7 @@ def start_gui():
         show_share_button=False,
         brand_color=(230, 180, 30),
     )
-    markdown_source = (ROOT_DIR / "dabox/gui/assets/mdx_example.mdx").read_text()
+    markdown_source = (ROOT_DIR / "dabox/gui/assets/video_streams.mdx").read_text()
     server.add_gui_markdown(content=markdown_source)
 
     # define a video capture object
