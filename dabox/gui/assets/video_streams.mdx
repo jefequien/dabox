@@ -1,0 +1,17 @@
+## Video Streams
+
+---
+
+You can embed WebRTC streams directly in Markdown. The internet is a miracle.
+
+{(function () {
+    let stream_names = $STREAM_NAMES
+
+    let elements = []
+    for (var i = 0; i < stream_names.length; i ++ ){
+        let stream_src = window.location.protocol + "//" + window.location.hostname + ":$WEBRTC_PORT/" + stream_names[i]
+        let element = <iframe src={stream_src} frameborder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+        elements.push(element)
+    }
+    return elements
+})()}
