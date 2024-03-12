@@ -59,8 +59,7 @@ def start_gui():
     vid = VideoCapture(f"rtsp://localhost:{RTSP_PORT}/camera0")
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     max_width = 80
-    model_path = "./yolov8n.onnx"
-    yolov8_detector = YOLOv8(model_path, conf_thres=0.5, iou_thres=0.5)
+    yolov8_detector = YOLOv8("yolov8n.onnx", conf_thres=0.5, iou_thres=0.5)
 
     for _ in tqdm(range(10000000)):
         frame = vid.read()
