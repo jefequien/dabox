@@ -4,6 +4,7 @@ from pathlib import Path
 
 from rich import console
 
+from dabox.gui.gui import start_gui
 from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR, RTSP_PORT
 from dabox.util.cli_logo import cli_logo
 from dabox.util.devices import get_stream_mapping
@@ -52,17 +53,16 @@ def start_cameras():
     video_size = "640x480"
     pixel_format = "yuyv422"
     for stream_name, device_name in stream_mapping.items():
-        print(device_name)
-        ffmpeg_cmd = f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
+        ffmpeg_cmd = f"ffmpeg -loglevel error -f {FFMPEG_INPUT_FORMAT} -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
         run_command(ffmpeg_cmd, background=True)
 
 
 def main():
     cli_logo()
 
+    start_mediamtx_server()
     start_cameras()
-    # start_mediamtx_server()
-    # start_gui()
+    start_gui()
 
 
 if __name__ == "__main__":

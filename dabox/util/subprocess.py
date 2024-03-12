@@ -19,7 +19,21 @@ def run_command(command: str, background: bool = False) -> str:
         subprocess.Popen(command, shell=True)
         return ""
     
-    res = subprocess.run(command, shell=True, check=False)
+    res = subprocess.run(
+        command, shell=True, capture_output=True, text=True, check=False
+    )
+    ret_code = res.returncode
+    if ret_code != 0:
+        CONSOLE.print(f"[bold red]Error: `{command}` failed.")
+        sys.exit(1)
+    return res.stdout
+
+
+def run_command_and_capture_output(command: str, ) -> str:
+
+    res = subprocess.run(
+        command, shell=True, capture_output=True, text=True, check=False
+    )
     ret_code = res.returncode
     if ret_code != 0:
         CONSOLE.print(f"[bold red]Error: `{command}` failed.")

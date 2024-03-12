@@ -18,6 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "onnxruntime",
+    "onnxruntime_gpu",
     "opencv-python",
     "rich",
     "torch",

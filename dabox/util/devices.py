@@ -11,7 +11,6 @@ def _get_device_names() -> list[str]:
             x.group().strip()
             for x in re.finditer(r"/dev/video(.*?)\n", list_devices_str)
         ]
-        print(all_video_device_names)
 
         device_names = []
         for device_name in all_video_device_names:
