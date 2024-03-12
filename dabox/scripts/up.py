@@ -49,8 +49,11 @@ def start_mediamtx_server():
 
 def start_cameras():
     stream_mapping = get_stream_mapping()
+    frame_rate = 30
+    video_size = "640x480"
+    pixel_format = "yuyv422"
     for stream_name, device_name in stream_mapping.items():
-        ffmpeg_cmd = f"ffmpeg -loglevel error -f {FFMPEG_INPUT_FORMAT} -framerate 30 -video_size 640x480 -pix_fmt yuyv422 -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
+        ffmpeg_cmd = f"ffmpeg -loglevel error -f {FFMPEG_INPUT_FORMAT} -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
         run_command_and_capture_output(ffmpeg_cmd, background=True)
 
 
