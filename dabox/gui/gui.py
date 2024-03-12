@@ -16,7 +16,7 @@ from dabox.util.video_capture import VideoCapture
 from dabox.yolov8.yolov8 import YOLOv8
 
 
-def main():
+def start_gui():
     # Start visualization server.
     server = viser.ViserServer(label="DaBox")
     buttons = (
@@ -104,4 +104,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    start_gui()
