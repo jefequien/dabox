@@ -26,17 +26,8 @@ pip install -e .'[dev]'
 
 # Usage
 
-Start the MediaMTX server.
-```bash
-# On ARM-based Mac
-./scripts/mediamtx_osx.sh
-
-# On Linux
-./scripts/mediamtx_linux.sh
-```
-
-Export Yolov8 model and start the DaBox GUI.
+Start DaBox!
 ```bash
 dabox-export-yolov8
-dabox-gui
+dabox-up
 ```

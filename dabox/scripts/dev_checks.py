@@ -1,32 +1,16 @@
 #!/usr/bin/env python
 """Runs formatting, linting, and type checking tests."""
 
-import subprocess
-import sys
-
 import tyro
 from rich import console
 from rich.style import Style
+
+from dabox.util.subprocess import run_command
 
 CONSOLE = console.Console()
 
 TYPE_TESTS = ["mypy ."]
 FORMAT_TESTS = ["ruff check --fix .", "ruff format ."]
-
-
-def run_command(command: str, continue_on_fail: bool = False) -> bool:
-    """Run a command kill actions if it fails
-
-    Args:
-        command: Command to run.
-        continue_on_fail: Whether to continue running commands if the current one fails..
-    """
-    ret_code = subprocess.call(command, shell=True)
-    if ret_code != 0:
-        CONSOLE.print(f"[bold red]Error: `{command}` failed.")
-        if not continue_on_fail:
-            sys.exit(1)
-    return ret_code == 0
 
 
 def run_code_checks(
