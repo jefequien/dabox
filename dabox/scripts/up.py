@@ -29,6 +29,16 @@ def install_mediamtx(mtx_version="v1.6.0") -> Path:
         run_command(
             f"tar -xf {mtx_install_dir}/mediamtx.tar.gz --directory {mtx_install_dir}"
         )
+    elif PLATFORM == "osx":
+        mtx_platform = "darwin_arm64"
+        run_command(
+            f"wget -nc -O {mtx_install_dir}/mediamtx.tar.gz https://github.com/bluenviron/mediamtx/releases/download/{mtx_version}/mediamtx_{mtx_version}_{mtx_platform}.tar.gz"
+        )
+        run_command(
+            f"tar -xf {mtx_install_dir}/mediamtx.tar.gz --directory {mtx_install_dir}"
+        )
+    else:
+        raise ValueError(f"Platform not recognized: {PLATFORM}")
     return mediamtx_path
 
 
