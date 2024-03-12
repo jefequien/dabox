@@ -37,7 +37,7 @@ dev = [
 ]
 
 [project.urls]
-"GitHub" = "https://github.com/jefequien/DaBox"
+"GitHub" = "https://github.com/jefequien/dabox"
 
 [project.scripts]
 dabox-dev-checks = "dabox.scripts.dev_checks:entrypoint"

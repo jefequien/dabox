@@ -19,8 +19,8 @@ pip install --upgrade pip setuptools
 The current recommended way to install `dabox` is from source.
 
 ```bash
-git clone https://github.com/jefequien/DaBox.git
-cd DaBox
+git clone https://github.com/jefequien/dabox.git
+cd dabox
 pip install -e .'[dev]'
 ```
 

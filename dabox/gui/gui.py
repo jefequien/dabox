@@ -24,12 +24,12 @@ def start_gui():
         TitlebarButton(
             text="Github",
             icon="GitHub",
-            href="https://github.com/jefequien/DaBox",
+            href="https://github.com/jefequien/dabox",
         ),
         TitlebarButton(
             text="Documentation",
             icon="Description",
-            href="https://github.com/jefequien/DaBox",
+            href="https://github.com/jefequien/dabox",
         ),
     )
     image = TitlebarImage(
