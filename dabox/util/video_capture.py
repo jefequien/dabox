@@ -8,6 +8,8 @@ import cv2
 class VideoCapture:
     def __init__(self, name):
         self.name = name
+        self.timeout_sec = 3
+
         self.q = Queue()
         t = threading.Thread(target=self._reader)
         t.daemon = True
@@ -28,8 +30,9 @@ class VideoCapture:
                         pass
                 self.q.put(frame)
             cap.release()
-            # Wait before trying again
-            time.sleep(10)
+
+            print(f"Waiting {self.timeout_sec} seconds before trying again...")
+            time.sleep(self.timeout_sec)
 
     def read(self):
         return self.q.get()

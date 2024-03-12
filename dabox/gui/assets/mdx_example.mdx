@@ -1,4 +1,5 @@
-export const stream0 = window.location.protocol + "//" + window.location.hostname + ":8443/cam"
+export const stream0 = window.location.protocol + "//" + window.location.hostname + ":8443/camera0"
+export const stream1 = window.location.protocol + "//" + window.location.hostname + ":8443/camera1"
 
 ## Video Streams
 
@@ -7,3 +8,4 @@ export const stream0 = window.location.protocol + "//" + window.location.hostnam
 You can embed WebRTC streams directly in Markdown. The internet is a miracle.
 
 <iframe src={stream0} frameborder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+<iframe src={stream1} frameborder="0" allowFullScreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>

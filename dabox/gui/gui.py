@@ -51,7 +51,7 @@ def main():
     server.add_gui_markdown(content=markdown_source)
 
     # define a video capture object
-    vid = VideoCapture("rtsp://localhost:8554/cam")
+    vid = VideoCapture("rtsp://localhost:8554/camera0")
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     max_width = 80
     model_path = "./yolov8n.onnx"

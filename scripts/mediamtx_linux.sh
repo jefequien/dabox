@@ -11,4 +11,4 @@ pushd $INSTALL_DIR
     tar -xvf mediamtx_v1.6.0_$PLATFORM.tar.gz
 popd
 
-FFMPEG_INPUT_FORMAT=v4l2 FFMPEG_INPUT_DEVICE=/dev/video0 $INSTALL_DIR/mediamtx
+FFMPEG_INPUT_FORMAT=v4l2 FFMPEG_INPUT_DEVICE0=/dev/video0 FFMPEG_INPUT_DEVICE1=/dev/video2 $INSTALL_DIR/mediamtx
