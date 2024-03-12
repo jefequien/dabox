@@ -10,7 +10,8 @@ import viser
 from tqdm import tqdm
 from viser.theme import TitlebarButton, TitlebarConfig, TitlebarImage
 
-from dabox.env import ROOT_DIR
+from dabox.env import ROOT_DIR, RTSP_PORT, WEBRTC_PORT
+from dabox.util.devices import get_stream_mapping
 from dabox.util.projection import backproject_depth
 from dabox.util.video_capture import VideoCapture
 from dabox.yolov8.yolov8 import YOLOv8
@@ -47,11 +48,15 @@ def start_gui():
         show_share_button=False,
         brand_color=(230, 180, 30),
     )
+
+    stream_names = list(get_stream_mapping().keys())
     markdown_source = (ROOT_DIR / "dabox/gui/assets/video_streams.mdx").read_text()
+    markdown_source = markdown_source.replace("$WEBRTC_PORT", str(WEBRTC_PORT))
+    markdown_source = markdown_source.replace("$STREAM_NAMES", str(stream_names))
     server.add_gui_markdown(content=markdown_source)
 
     # define a video capture object
-    vid = VideoCapture("rtsp://localhost:8554/camera0")
+    vid = VideoCapture(f"rtsp://localhost:{RTSP_PORT}/camera0")
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     max_width = 80
     model_path = "./yolov8n.onnx"
