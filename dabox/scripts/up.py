@@ -23,7 +23,6 @@ def main():
     cli_logo()
     camera_processes = start_camera_processes()
     mediamtx_process = start_mediamtx_process()
-    time.sleep(1)
     gui_process = open_ipc_subprocess("python -m dabox.gui")
 
     try:
