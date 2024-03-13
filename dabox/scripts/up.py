@@ -1,68 +1,74 @@
 """Dabox entrypoint"""
 
-from pathlib import Path
+import subprocess
+import time
 
 from rich import console
 
-from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR, RTSP_PORT
-from dabox.gui.gui import start_gui
+from dabox.streams.mediamtx import start_camera_processes, start_mediamtx_process
 from dabox.util.cli_logo import cli_logo
-from dabox.util.devices import get_stream_mapping
-from dabox.util.subprocess import run_command
+from dabox.util.logging import logger
+from dabox.util.subprocess import (
+    interrupt_ipc_subprocess,
+)
 
 CONSOLE = console.Console()
 
-
-def install_mediamtx(mtx_version="v1.6.0") -> Path:
-    mtx_install_dir = ROOT_DIR / ".output" / f"mediamtx_{mtx_version}"
-    mediamtx_path = mtx_install_dir / "mediamtx"
-    if mediamtx_path.is_file():
-        return mediamtx_path
-
-    CONSOLE.print("Installing MediaMTX")
-    mtx_install_dir.mkdir(parents=True, exist_ok=True)
-    if PLATFORM == "linux":
-        mtx_platform = "linux_amd64"
-        run_command(
-            f"wget -nc -O {mtx_install_dir}/mediamtx.tar.gz https://github.com/bluenviron/mediamtx/releases/download/{mtx_version}/mediamtx_{mtx_version}_{mtx_platform}.tar.gz"
-        )
-        run_command(
-            f"tar -xf {mtx_install_dir}/mediamtx.tar.gz --directory {mtx_install_dir}"
-        )
-    elif PLATFORM == "osx":
-        mtx_platform = "darwin_arm64"
-        run_command(
-            f"wget -nc -O {mtx_install_dir}/mediamtx.tar.gz https://github.com/bluenviron/mediamtx/releases/download/{mtx_version}/mediamtx_{mtx_version}_{mtx_platform}.tar.gz"
-        )
-        run_command(
-            f"tar -xf {mtx_install_dir}/mediamtx.tar.gz --directory {mtx_install_dir}"
-        )
-    else:
-        raise ValueError(f"Platform not recognized: {PLATFORM}")
-    return mediamtx_path
-
-
-def start_mediamtx_server():
-    mediamtx_path = install_mediamtx()
-    run_command(str(mediamtx_path), background=True)
-
-
-def start_cameras():
-    stream_mapping = get_stream_mapping()
-    frame_rate = 30
-    video_size = "640x480"
-    pixel_format = "yuyv422"
-    for stream_name, device_name in stream_mapping.items():
-        ffmpeg_cmd = f"ffmpeg -loglevel error -f {FFMPEG_INPUT_FORMAT} -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
-        run_command(ffmpeg_cmd, background=True)
+_SUBPROCESS_WAIT_TIMEOUT = 10
+_CHECK_SUBPROCESS_INTERVAL = 5
 
 
 def main():
     cli_logo()
+    mediamtx_process = start_mediamtx_process()
+    camera_processes = start_camera_processes()
 
-    start_mediamtx_server()
-    start_cameras()
-    start_gui()
+    try:
+        # start_gui()
+        while True:
+            time.sleep(_CHECK_SUBPROCESS_INTERVAL)
+
+            if mediamtx_process.poll() is not None:
+                raise Exception(
+                    "mediamtx process shut down unexpectedly with return code"
+                    f" {mediamtx_process.returncode}"
+                )
+
+            for camera_process in camera_processes:
+                if camera_process.poll() is not None:
+                    raise Exception(
+                        "camera process shut down unexpectedly with return code"
+                        f" {camera_process.returncode}"
+                    )
+
+    except KeyboardInterrupt:
+        logger.info("KeyboardInterrupt received")
+    except Exception:
+        logger.exception("An unexpected exception has occurred")
+    finally:
+        logger.info("Shutting down DaBox services...")
+        interrupt_ipc_subprocess(mediamtx_process)
+        for camera_process in camera_processes:
+            interrupt_ipc_subprocess(camera_process)
+
+        try:
+            mediamtx_process.wait(timeout=_SUBPROCESS_WAIT_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            logger.warning(
+                "mediamtx process did not terminate cleanly, killing the process"
+            )
+            mediamtx_process.kill()
+
+        for camera_process in camera_processes:
+            try:
+                camera_process.wait(timeout=_SUBPROCESS_WAIT_TIMEOUT)
+            except subprocess.TimeoutExpired:
+                logger.warning(
+                    "camera process did not terminate cleanly, killing the process"
+                )
+                camera_process.kill()
+
+        logger.info("DaBox services shut down.")
 
 
 if __name__ == "__main__":
