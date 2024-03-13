@@ -1,6 +1,5 @@
 import subprocess
-
-from path import Path
+from pathlib import Path
 
 from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR, RTSP_PORT
 from dabox.util.devices import get_stream_mapping
