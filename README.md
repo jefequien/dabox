@@ -47,4 +47,8 @@ Start DABOX!
 dabox-up
 
 # Visit http://localhost:8080
+# Ctrl+C to stop server
+
+# Sometimes the server does not stop cleanly, run this command to kill
+dabox-kill
 ```

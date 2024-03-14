@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, DABOX_CACHE_DIR
+from dabox.env import DABOX_CACHE_DIR, FFMPEG_INPUT_FORMAT, PLATFORM
 from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
 from dabox.util.subprocess import run_command

@@ -37,8 +37,9 @@ dev = [
 "GitHub" = "https://github.com/jefequien/dabox"
 
 [project.scripts]
+dabox-up = "dabox.scripts.dabox_up:main"
+dabox-kill = "dabox.scripts.dabox_kill:main"
 dabox-preflight = "dabox.scripts.preflight:run_preflight"
-dabox-up = "dabox.scripts.up:main"
 
 [tool.setuptools.packages.find]
 include = ["dabox*"]
