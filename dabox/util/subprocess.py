@@ -30,9 +30,9 @@ def open_ipc_subprocess(command: str, **kwargs: Any) -> subprocess.Popen[Any]:
     if sys.platform == "win32":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP
 
+    parts = command.split(" ")
     return subprocess.Popen(
-        command,
-        shell=True,
+        parts,
         creationflags=creationflags,
         **kwargs,
     )

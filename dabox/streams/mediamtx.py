@@ -38,16 +38,19 @@ def install_mediamtx(mtx_version="v1.6.0") -> Path:
 def get_ffmpeg_commands() -> dict[str, str]:
     stream_mapping = get_stream_mapping()
     frame_rate = 30
-    video_size = "640x480"
-    pixel_format = "yuyv422"
-    # video_size = "1280x720"
-    # pixel_format = "mjpeg"
+    camera_size = (1280, 720)
+    camera_pix_fmt = "mjpeg"
+
+    network_size = (640, 480)
+    network_pix_fmt = "rgb24"
+    network_pkt_size = network_size[0] * network_size[1] * 3
+
     ffmpeg_commands = {}
     for stream_name, device_name in stream_mapping.items():
         ffmpeg_cmd = (
-            f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel error -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i /dev/video0"
-            + " -preset ultrafast -tune zerolatency -pix_fmt rgb24 -pkt_size 921600 -f rawvideo zmq:tcp://127.0.0.1:5556"
-            + " -preset ultrafast -tune zerolatency -b:v 1M -vcodec libx264 -bf 0 -f rtsp rtsp://localhost:8554/camera0"
+            f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel error -framerate {frame_rate} -video_size {camera_size[0]}x{camera_size[1]} -pix_fmt {camera_pix_fmt} -i {device_name}"
+            + f" -preset ultrafast -tune zerolatency -s {network_size[0]}x{network_size[1]} -pix_fmt {network_pix_fmt} -pkt_size {network_pkt_size} -f rawvideo zmq:tcp://127.0.0.1:5556"
+            + f" -preset ultrafast -tune zerolatency -b:v 1M -vcodec libx264 -bf 0 -f rtsp rtsp://localhost:8554/{stream_name}"
         )
         ffmpeg_commands[stream_name] = ffmpeg_cmd
     return ffmpeg_commands

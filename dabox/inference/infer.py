@@ -16,7 +16,6 @@ def main():
     socket = context.socket(zmq.PUB)
     socket.bind("tcp://127.0.0.1:5555")
 
-    # context = zmq.Context()
     sub_socket = context.socket(zmq.SUB)
     sub_socket.subscribe("")
     sub_socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message

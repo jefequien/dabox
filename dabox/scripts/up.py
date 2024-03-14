@@ -11,7 +11,7 @@ from dabox.util.subprocess import (
     open_ipc_subprocess,
 )
 
-_SUBPROCESS_WAIT_TIMEOUT = 10
+_SUBPROCESS_WAIT_TIMEOUT = 3
 _CHECK_SUBPROCESS_INTERVAL = 5
 
 
@@ -56,6 +56,7 @@ def main():
                     f"{process_name} process did not terminate cleanly, killing the process"
                 )
                 process.kill()
+                logger.info(f"Killed {process_name}")
 
         logger.info("DaBox services shut down.")
 
