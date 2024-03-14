@@ -44,7 +44,7 @@ def main():
     except Exception:
         logger.exception("An unexpected exception has occurred")
     finally:
-        logger.info("Shutting down DaBox services...")
+        logger.info("Shutting down DABOX services...")
         for _, process in processes.items():
             interrupt_ipc_subprocess(process)
 
@@ -58,7 +58,7 @@ def main():
                 process.kill()
                 logger.info(f"Killed {process_name}")
 
-        logger.info("DaBox services shut down.")
+        logger.info("DABOX services shut down.")
 
 
 if __name__ == "__main__":
