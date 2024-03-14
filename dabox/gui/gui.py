@@ -1,12 +1,12 @@
-"""Camera Visualizer"""
+"""Viser GUI"""
 
 import numpy as np
 import viser
 import zmq
 
 from dabox.env import ROOT_DIR, WEBRTC_PORT
-from dabox.inference.yolov8.utils import draw_detections
-from dabox.util.devices import get_device_names
+from dabox.util.devices import get_device_infos
+from dabox.util.drawing import draw_detections
 
 from .theme import setup_viser_theme
 
@@ -16,8 +16,7 @@ def main():
     server = viser.ViserServer(label="DABOX")
     setup_viser_theme(server)
 
-    device_names = get_device_names()
-    stream_names = [f"camera{stream_id}" for stream_id in range(len(device_names))]
+    stream_names = [device_info.stream_name for device_info in get_device_infos()]
     markdown_source = (ROOT_DIR / "dabox/gui/assets/video_streams.mdx").read_text()
     markdown_source = markdown_source.replace("$WEBRTC_PORT", str(WEBRTC_PORT))
     markdown_source = markdown_source.replace("$STREAM_NAMES", str(stream_names))
