@@ -3,9 +3,7 @@
 import subprocess
 import time
 
-from rich import console
-
-from dabox.streams.mediamtx import start_camera_processes, start_mediamtx_process
+from dabox.streams.mediamtx import get_ffmpeg_commands, install_mediamtx
 from dabox.util.cli_logo import cli_logo
 from dabox.util.logging import logger
 from dabox.util.subprocess import (
@@ -13,16 +11,20 @@ from dabox.util.subprocess import (
     open_ipc_subprocess,
 )
 
-CONSOLE = console.Console()
-
 _SUBPROCESS_WAIT_TIMEOUT = 10
 _CHECK_SUBPROCESS_INTERVAL = 5
 
 
 def main():
     cli_logo()
-    processes = start_camera_processes()
-    processes["mediamtx"] = start_mediamtx_process()
+
+    mediamtx_path = install_mediamtx()
+    ffmpeg_commands = get_ffmpeg_commands()
+
+    processes = {}
+    for stream_name, ffmpeg_command in ffmpeg_commands.items():
+        processes[stream_name] = open_ipc_subprocess(ffmpeg_command)
+    processes["mediamtx"] = open_ipc_subprocess(str(mediamtx_path))
     processes["inference"] = open_ipc_subprocess("python -m dabox.inference")
     processes["gui"] = open_ipc_subprocess("python -m dabox.gui")
 

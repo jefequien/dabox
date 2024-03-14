@@ -1,13 +1,12 @@
-import subprocess
 from pathlib import Path
 
 from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR, RTSP_PORT
 from dabox.util.devices import get_stream_mapping
 from dabox.util.logging import logger
-from dabox.util.subprocess import open_ipc_subprocess, run_command
+from dabox.util.subprocess import run_command
 
 
-def _install_mediamtx(mtx_version="v1.6.0") -> Path:
+def install_mediamtx(mtx_version="v1.6.0") -> Path:
     mtx_install_dir = ROOT_DIR / ".output" / f"mediamtx_{mtx_version}"
     mediamtx_path = mtx_install_dir / "mediamtx"
     if mediamtx_path.is_file():
@@ -36,22 +35,15 @@ def _install_mediamtx(mtx_version="v1.6.0") -> Path:
     return mediamtx_path
 
 
-def start_mediamtx_process() -> subprocess.Popen:
-    mediamtx_path = _install_mediamtx()
-    mediamtx_process = open_ipc_subprocess(str(mediamtx_path))
-    return mediamtx_process
-
-
-def start_camera_processes() -> dict[str, subprocess.Popen]:
+def get_ffmpeg_commands() -> dict[str, str]:
     stream_mapping = get_stream_mapping()
     frame_rate = 30
     # video_size = "640x480"
     # pixel_format = "yuyv422"
     video_size = "1280x720"
     pixel_format = "mjpeg"
-    processes = {}
+    ffmpeg_commands = {}
     for stream_name, device_name in stream_mapping.items():
         ffmpeg_cmd = f"ffmpeg -loglevel error -f {FFMPEG_INPUT_FORMAT} -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
-        camera_process = open_ipc_subprocess(ffmpeg_cmd)
-        processes[stream_name] = camera_process
-    return processes
+        ffmpeg_commands[stream_name] = ffmpeg_cmd
+    return ffmpeg_commands
