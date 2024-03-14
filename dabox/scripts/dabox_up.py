@@ -3,7 +3,7 @@
 import subprocess
 import time
 
-from dabox.env import ROOT_DIR
+from dabox.env import ASSETS_DIR
 from dabox.streams.mediamtx import get_ffmpeg_commands, install_mediamtx
 from dabox.util.cli_logo import cli_logo
 from dabox.util.logging import logger
@@ -20,7 +20,7 @@ def main():
     cli_logo()
 
     mediamtx_path = install_mediamtx()
-    mediamtx_config_path = ROOT_DIR / "mediamtx.yml"
+    mediamtx_config_path = ASSETS_DIR / "mediamtx.yml"
     ffmpeg_commands = get_ffmpeg_commands()
 
     processes = {}
