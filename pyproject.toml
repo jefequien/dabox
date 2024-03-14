@@ -20,8 +20,6 @@ dependencies = [
     "onnxruntime",
     "opencv-python",
     "pyzmq",
-    "rich",
-    "tyro",
     "viser",
 ]
 
@@ -37,7 +35,7 @@ dev = [
 "GitHub" = "https://github.com/jefequien/dabox"
 
 [project.scripts]
-dabox-dev-checks = "dabox.scripts.dev_checks:entrypoint"
+dabox-preflight = "dabox.scripts.preflight:run_preflight"
 dabox-up = "dabox.scripts.up:main"
 
 [tool.setuptools.packages.find]
