@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR
-from dabox.util.devices import get_device_names
+from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
 from dabox.util.subprocess import run_command
 
@@ -36,23 +36,17 @@ def install_mediamtx(mtx_version="v1.6.0") -> Path:
 
 
 def get_ffmpeg_commands() -> dict[str, str]:
-    device_names = get_device_names()
-    frame_rate = 30
-    camera_size = (1280, 720)
-    camera_pix_fmt = "mjpeg"
-
+    device_infos = get_device_infos()
     network_size = (640, 480)
     network_pix_fmt = "rgb24"
     network_pkt_size = network_size[0] * network_size[1] * 3
 
     ffmpeg_commands = {}
-    for device_id, device_name in enumerate(device_names):
-        stream_name = f"camera{device_id}"
-        zmq_port = 5556 + device_id
+    for device_info in device_infos:
         ffmpeg_cmd = (
-            f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel error -framerate {frame_rate} -video_size {camera_size[0]}x{camera_size[1]} -pix_fmt {camera_pix_fmt} -i {device_name}"
-            + f" -preset ultrafast -tune zerolatency -s {network_size[0]}x{network_size[1]} -pix_fmt {network_pix_fmt} -pkt_size {network_pkt_size} -f rawvideo zmq:tcp://127.0.0.1:{zmq_port}"
-            + f" -preset ultrafast -tune zerolatency -b:v 1M -vcodec libx264 -bf 0 -f rtsp rtsp://localhost:8554/{stream_name}"
+            f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel error -framerate {device_info.frame_rate} -video_size {device_info.video_size[0]}x{device_info.video_size[1]} -pix_fmt {device_info.pixel_format} -i {device_info.name}"
+            + f" -preset ultrafast -tune zerolatency -s {network_size[0]}x{network_size[1]} -pix_fmt {network_pix_fmt} -pkt_size {network_pkt_size} -f rawvideo zmq:tcp://127.0.0.1:{device_info.zmq_port}"
+            + f" -preset ultrafast -tune zerolatency -b:v 1M -vcodec libx264 -bf 0 -f rtsp rtsp://localhost:8554/{device_info.stream_name}"
         )
-        ffmpeg_commands[stream_name] = ffmpeg_cmd
+        ffmpeg_commands[device_info.name] = ffmpeg_cmd
     return ffmpeg_commands
