@@ -3,10 +3,8 @@ import numpy as np
 import zmq
 from tqdm import tqdm
 
-from dabox.env import RTSP_PORT
 from dabox.util.projection import backproject_depth
 
-from .video_capture import VideoCapture
 from .yolov8.yolov8 import YOLOv8
 
 
@@ -17,7 +15,7 @@ def main():
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
     socket.bind("tcp://127.0.0.1:5555")
-    
+
     # context = zmq.Context()
     sub_socket = context.socket(zmq.SUB)
     sub_socket.subscribe("")
