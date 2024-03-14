@@ -27,9 +27,13 @@ Getting neural networks to run with low-latency on video streams is notoriously 
 conda create --name dabox -y python=3.10 && conda activate dabox
 ```
 
-## Install from source
+Install from pypi
 
-The current recommended way to install `dabox` is from source.
+```
+pip install dabox-project
+```
+
+**OR** install from `dabox` from source. 
 
 ```bash
 git clone https://github.com/jefequien/dabox.git && cd dabox

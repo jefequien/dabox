@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dabox-project"
-version = "0.1.0"
+version = "0.1.1"
 description = "The DABOX project"
 readme = "README.md"
 license = { text="MIT" }
