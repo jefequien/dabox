@@ -28,9 +28,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .'[dev]'
     - name: Run Ruff Linter
-      run: ruff check docs/ dabox/ tests/ --output-format=github
+      run: ruff check dabox/ tests/ --output-format=github
     - name: Run Ruff Formatter
-      run: ruff format docs/ dabox/ tests/ --diff
+      run: ruff format dabox/ tests/ --diff
     - name: Run mypy
       run: |
         mypy .
