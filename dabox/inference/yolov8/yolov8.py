@@ -46,10 +46,8 @@ class YOLOv8:
     def prepare_input(self, image):
         self.img_height, self.img_width = image.shape[:2]
 
-        input_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
         # Resize input image
-        input_img = cv2.resize(input_img, (self.input_width, self.input_height))
+        input_img = cv2.resize(image, (self.input_width, self.input_height))
 
         # Scale input pixel values to 0 to 1
         input_img = input_img / 255.0

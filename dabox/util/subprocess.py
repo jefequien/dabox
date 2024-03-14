@@ -3,7 +3,7 @@
 import signal
 import subprocess
 import sys
-from typing import Any, Sequence
+from typing import Any
 
 from .logging import logger
 
@@ -24,14 +24,14 @@ def run_command(command: str) -> str:
     return res.stdout
 
 
-def open_ipc_subprocess(parts: Sequence[str], **kwargs: Any) -> subprocess.Popen[Any]:
+def open_ipc_subprocess(command: str, **kwargs: Any) -> subprocess.Popen[Any]:
     """Sets the correct flags to support graceful termination."""
     creationflags = 0
     if sys.platform == "win32":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP
 
     return subprocess.Popen(
-        parts,
+        command,
         shell=True,
         creationflags=creationflags,
         **kwargs,

@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "onnxruntime",
     "opencv-python",
+    "pyzmq",
     "rich",
     "tyro",
     "viser",
