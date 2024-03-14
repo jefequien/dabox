@@ -2,6 +2,12 @@
 
 Building robots is hard. If we want to live in a future where there are robots everywhere, robots need to be a lot easier to build.
 
+Getting neural networks to run in real-time with low-latency on video streams is notoriously difficult. DaBox is designed to be a ML-friendly, easy-to-install application with several features that every robot needs.
+
+# Features available out of "DaBox"
+- Low-latency inference with FFMpeg, ZMQ, and ONNX Runtime
+- GUI with 3D viewer and WebRTC streams
+
 # Installation
 
 ## Create environment
