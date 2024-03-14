@@ -4,7 +4,14 @@ import os
 import platform
 from pathlib import Path
 
+# -----------------------------------------------------------------------------
+# Global Directories
+# -----------------------------------------------------------------------------
+
 ROOT_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+HOME_DIR = Path(os.path.expanduser("~"))
+
+DABOX_CACHE_DIR = HOME_DIR / ".cache" / "dabox"
 
 PLATFORM = "linux" if "Linux" in platform.platform() else "osx"
 FFMPEG_INPUT_FORMAT = "v4l2" if PLATFORM == "linux" else "avfoundation"

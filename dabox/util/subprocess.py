@@ -8,19 +8,21 @@ from typing import Any
 from .logging import logger
 
 
-def run_command(command: str) -> str:
+def run_command(command: str, continue_on_fail: bool = False) -> str:
     """Run a command kill actions if it fails
 
     Args:
         command: Command to run.
+        continue_on_fail: Whether to continue running commands if the current one fails..
     """
     res = subprocess.run(
         command, shell=True, capture_output=True, text=True, check=False
     )
     ret_code = res.returncode
     if ret_code != 0:
-        logger.error(f"Run command failed: {command}")
-        sys.exit(1)
+        if not continue_on_fail:
+            logger.error(f"Run command failed: {command}")
+            sys.exit(1)
     return res.stdout
 
 
