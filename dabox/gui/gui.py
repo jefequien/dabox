@@ -17,8 +17,14 @@ from dabox.util.video_capture import VideoCapture
 from dabox.yolov8.yolov8 import YOLOv8
 
 
-def start_gui():
-    # Start visualization server.
+def main():
+    """Start visualization server."""
+    # define a video capture object
+    vid = VideoCapture(f"rtsp://localhost:{RTSP_PORT}/camera0")
+    K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
+    max_width = 80
+    yolov8_detector = YOLOv8("yolov8n.onnx", conf_thres=0.5, iou_thres=0.5)
+
     server = viser.ViserServer(label="DaBox")
     buttons = (
         TitlebarButton(
@@ -54,13 +60,6 @@ def start_gui():
     markdown_source = markdown_source.replace("$WEBRTC_PORT", str(WEBRTC_PORT))
     markdown_source = markdown_source.replace("$STREAM_NAMES", str(stream_names))
     server.add_gui_markdown(content=markdown_source)
-
-    # define a video capture object
-    vid = VideoCapture(f"rtsp://localhost:{RTSP_PORT}/camera0")
-    K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
-    max_width = 80
-    yolov8_detector = YOLOv8("yolov8n.onnx", conf_thres=0.5, iou_thres=0.5)
-
     for _ in tqdm(range(10000000)):
         frame = vid.read()
 
@@ -108,4 +107,4 @@ def start_gui():
 
 
 if __name__ == "__main__":
-    start_gui()
+    main()
