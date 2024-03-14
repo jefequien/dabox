@@ -1,16 +1,12 @@
-"""Camera Visualizer
-
-Connect to a RealSense camera, then visualize RGB-D readings as a point clouds. Requires
-pyrealsense2.
-"""
+"""Viser GUI"""
 
 import numpy as np
 import viser
 import zmq
 
 from dabox.env import ROOT_DIR, WEBRTC_PORT
-from dabox.inference.yolov8.utils import draw_detections
 from dabox.util.devices import get_device_infos
+from dabox.util.drawing import draw_detections
 
 from .theme import setup_viser_theme
 
