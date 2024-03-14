@@ -4,7 +4,7 @@ import numpy as np
 import viser
 import zmq
 
-from dabox.env import ROOT_DIR, WEBRTC_PORT
+from dabox.env import ASSETS_DIR, WEBRTC_PORT
 from dabox.util.devices import get_device_infos
 from dabox.util.drawing import draw_detections
 
@@ -17,7 +17,7 @@ def main():
     setup_viser_theme(server)
 
     stream_names = [device_info.stream_name for device_info in get_device_infos()]
-    markdown_source = (ROOT_DIR / "dabox/gui/assets/video_streams.mdx").read_text()
+    markdown_source = (ASSETS_DIR / "video_streams.mdx").read_text()
     markdown_source = markdown_source.replace("$WEBRTC_PORT", str(WEBRTC_PORT))
     markdown_source = markdown_source.replace("$STREAM_NAMES", str(stream_names))
     server.add_gui_markdown(content=markdown_source)

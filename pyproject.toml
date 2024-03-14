@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dabox-project"
-version = "0.1.1"
+version = "0.1.2"
 description = "The DABOX project"
 readme = "README.md"
 license = { text="MIT" }
@@ -43,6 +43,9 @@ dabox-preflight = "dabox.scripts.preflight:run_preflight"
 
 [tool.setuptools.packages.find]
 include = ["dabox*"]
+
+[tool.setuptools.package-data]
+dabox = ["assets/**/*"]
 
 [tool.mypy]
 python_version = "3.10"
