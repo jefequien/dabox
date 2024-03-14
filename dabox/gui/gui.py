@@ -75,13 +75,13 @@ def main():
         colors = cv2.resize(image, (w, h), cv2.INTER_LINEAR)
         depth = np.ones(colors.shape[:2]) * 10.0
         points = backproject_depth(depth, K)
-        colors = colors.reshape((-1, 3))
+        points_colors = colors.reshape((-1, 3))
 
         # Place point cloud.
         server.add_point_cloud(
             "/points_main",
             points=points.astype(np.float16),
-            colors=colors.astype(np.uint8),
+            colors=points_colors.astype(np.uint8),
             point_size=0.1,
         )
 
@@ -93,7 +93,7 @@ def main():
             fov=fov,
             aspect=aspect,
             scale=0.15,
-            image=image,
+            image=colors,
             wxyz=np.array([1.0, 0.0, 0.0, 0.0]),
             position=np.zeros(3),
         )
