@@ -4,9 +4,6 @@ Connect to a RealSense camera, then visualize RGB-D readings as a point clouds. 
 pyrealsense2.
 """
 
-import time
-
-import cv2
 import numpy as np
 import viser
 import zmq
@@ -61,18 +58,16 @@ def main():
     socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message
     socket.connect("tcp://127.0.0.1:5555")
 
+    w, h = (640, 480)
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     while True:
         out = socket.recv_pyobj()
-        image = out["image"]
         boxes = out["boxes"]
         scores = out["scores"]
         labels = out["labels"]
-        time.sleep(0.1)
 
+        image = np.zeros((h, w, 3), dtype=np.uint8)
         debug_vis = draw_detections(image, boxes, scores, labels)
-        debug_vis = cv2.resize(debug_vis, (640, 480), cv2.INTER_LINEAR)
-        h, w = debug_vis.shape[:2]
 
         # Place point cloud.
         server.add_point_cloud(

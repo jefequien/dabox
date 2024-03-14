@@ -9,8 +9,7 @@ Building robots is hard. If we want to live in a future where there are robots e
 `dabox` requires `python >= 3.10`. We recommend using conda to manage dependencies. Make sure to install [Conda](https://docs.conda.io/miniconda.html) before proceeding.
 
 ```bash
-conda create --name dabox -y python=3.10
-conda activate dabox
+conda create --name dabox -y python=3.10 && conda activate dabox
 ```
 
 ## Install from source
@@ -18,8 +17,7 @@ conda activate dabox
 The current recommended way to install `dabox` is from source.
 
 ```bash
-git clone https://github.com/jefequien/dabox.git
-cd dabox
+git clone https://github.com/jefequien/dabox.git && cd dabox
 pip install -e .'[dev]'
 ```
 
