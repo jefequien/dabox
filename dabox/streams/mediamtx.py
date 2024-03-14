@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, ROOT_DIR
+from dabox.env import FFMPEG_INPUT_FORMAT, PLATFORM, DABOX_CACHE_DIR
 from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
 from dabox.util.subprocess import run_command
 
 
 def install_mediamtx(mtx_version="v1.6.0") -> Path:
-    mtx_install_dir = ROOT_DIR / ".output" / f"mediamtx_{mtx_version}"
+    mtx_install_dir = DABOX_CACHE_DIR / f"mediamtx_{mtx_version}"
     mediamtx_path = mtx_install_dir / "mediamtx"
     if mediamtx_path.is_file():
         return mediamtx_path
