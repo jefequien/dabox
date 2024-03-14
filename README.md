@@ -33,7 +33,7 @@ Install from pypi
 pip install dabox-project
 ```
 
-**OR** install from `dabox` from source. 
+**OR** install `dabox` from source. 
 
 ```bash
 git clone https://github.com/jefequien/dabox.git && cd dabox
@@ -46,10 +46,10 @@ Start DABOX!
 ```bash
 dabox-up
 
-# Visit http://localhost:8080
-# Ctrl+C to stop server
+# Visit http://localhost:8080 in your browser
+# Press Ctrl+C to stop server
 
-# Sometimes DABOX does not stop cleanly. 
-# Run this command in another window to kill it.
+# This should be uncommon but sometimes DABOX does not stop cleanly.
+# Run this command in another window to forcefully kill it.
 dabox-kill
 ```
