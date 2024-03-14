@@ -19,7 +19,7 @@ def run_command(command: str) -> str:
     )
     ret_code = res.returncode
     if ret_code != 0:
-        logger.error(f"[bold red]Error: `{command}` failed.")
+        logger.error(f"Run command failed: {command}")
         sys.exit(1)
     return res.stdout
 
