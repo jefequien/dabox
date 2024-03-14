@@ -1,12 +1,10 @@
-"""
-Utilities for projecting points from 3d to 2d (and back).
-"""
+"""3D projection utilities"""
 
 import numpy as np
 
 
 def backproject_depth(depth: np.ndarray, K: np.ndarray) -> np.ndarray:
-    """Given a depth map and camera intrinsics, backproject each pixel to get a point cloud.
+    """Given a depth map and camera intrinsics, backproject the pixels to get a point cloud.
 
     Args:
         depth (np.ndarray): depth map with shape (h, w)

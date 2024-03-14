@@ -49,7 +49,7 @@ dabox-up
 # Visit http://localhost:8080 in your browser
 # Press Ctrl+C to stop server
 
-# This should be uncommon but DABOX does not stop cleanly.
+# This should be uncommon but sometimes DABOX does not stop cleanly.
 # Run this command in another window to forcefully kill it.
 dabox-kill
 ```
