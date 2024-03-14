@@ -1,4 +1,4 @@
-![DaBox](docs/viser_logo.svg)
+![DaBox](docs/dabox.png)
 
 Building robots is hard. If we want to live in a future where there are robots everywhere, robots need to be a lot easier to build.
 
