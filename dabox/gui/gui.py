@@ -4,27 +4,18 @@ Connect to a RealSense camera, then visualize RGB-D readings as a point clouds. 
 pyrealsense2.
 """
 
-import cv2
 import numpy as np
 import viser
+import zmq
 from tqdm import tqdm
 from viser.theme import TitlebarButton, TitlebarConfig, TitlebarImage
 
-from dabox.env import ROOT_DIR, RTSP_PORT, WEBRTC_PORT
+from dabox.env import ROOT_DIR, WEBRTC_PORT
 from dabox.util.devices import get_stream_mapping
-from dabox.util.projection import backproject_depth
-from dabox.util.video_capture import VideoCapture
-from dabox.yolov8.yolov8 import YOLOv8
 
 
 def main():
     """Start visualization server."""
-    # define a video capture object
-    vid = VideoCapture(f"rtsp://localhost:{RTSP_PORT}/camera0")
-    K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
-    max_width = 80
-    yolov8_detector = YOLOv8("yolov8n.onnx", conf_thres=0.5, iou_thres=0.5)
-
     server = viser.ViserServer(label="DaBox")
     buttons = (
         TitlebarButton(
@@ -60,28 +51,23 @@ def main():
     markdown_source = markdown_source.replace("$WEBRTC_PORT", str(WEBRTC_PORT))
     markdown_source = markdown_source.replace("$STREAM_NAMES", str(stream_names))
     server.add_gui_markdown(content=markdown_source)
+
+    context = zmq.Context()
+    socket = context.socket(zmq.SUB)
+    socket.connect("tcp://127.0.0.1:5555")
+    socket.subscribe("")
+
+    K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     for _ in tqdm(range(10000000)):
-        frame = vid.read()
-
-        # Update object localizer
-        boxes, scores, class_ids = yolov8_detector(frame)
-        frame = yolov8_detector.draw_detections(frame)
-
-        image = frame[:, :, ::-1]
-        h_ori, w_ori = image.shape[:2]
-        w = min(w_ori, max_width)
-        h = int(w * (h_ori / w_ori))
-
-        colors = cv2.resize(image, (w, h), cv2.INTER_LINEAR)
-        depth = np.ones(colors.shape[:2]) * 10.0
-        points = backproject_depth(depth, K)
-        points_colors = colors.reshape((-1, 3))
+        out = socket.recv_pyobj()
+        image = out["image"]
+        h, w = image.shape[:2]
 
         # Place point cloud.
         server.add_point_cloud(
             "/points_main",
-            points=points.astype(np.float16),
-            colors=points_colors.astype(np.uint8),
+            points=out["points"],
+            colors=out["colors"],
             point_size=0.1,
         )
 
@@ -93,7 +79,7 @@ def main():
             fov=fov,
             aspect=aspect,
             scale=0.15,
-            image=colors,
+            image=image,
             wxyz=np.array([1.0, 0.0, 0.0, 0.0]),
             position=np.zeros(3),
         )

@@ -42,16 +42,16 @@ def start_mediamtx_process() -> subprocess.Popen:
     return mediamtx_process
 
 
-def start_camera_processes() -> list[subprocess.Popen]:
+def start_camera_processes() -> dict[str, subprocess.Popen]:
     stream_mapping = get_stream_mapping()
     frame_rate = 30
     # video_size = "640x480"
     # pixel_format = "yuyv422"
-    video_size = "1920x1080"
+    video_size = "1280x720"
     pixel_format = "mjpeg"
-    camera_processes = []
+    processes = {}
     for stream_name, device_name in stream_mapping.items():
         ffmpeg_cmd = f"ffmpeg -loglevel error -f {FFMPEG_INPUT_FORMAT} -framerate {frame_rate} -video_size {video_size} -pix_fmt {pixel_format} -i {device_name} -preset ultrafast -tune zerolatency -b:v 1M -c:v libx264 -bf 0 -f rtsp rtsp://localhost:{RTSP_PORT}/{stream_name}"
         camera_process = open_ipc_subprocess(ffmpeg_cmd)
-        camera_processes.append(camera_process)
-    return camera_processes
+        processes[stream_name] = camera_process
+    return processes

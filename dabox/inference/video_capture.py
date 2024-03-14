@@ -28,7 +28,9 @@ class VideoCapture:
                         self.q.get_nowait()  # discard previous (unprocessed) frame
                     except Queue.Empty:
                         pass
-                self.q.put(frame)
+                # Convert BGR to RGB
+                image = frame[:, :, ::-1]
+                self.q.put(image)
             cap.release()
 
             print(f"Waiting {self.timeout_sec} seconds before trying again...")
