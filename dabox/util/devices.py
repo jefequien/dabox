@@ -4,7 +4,7 @@ from dabox.env import PLATFORM
 from dabox.util.subprocess import run_command
 
 
-def _get_device_names() -> list[str]:
+def get_device_names() -> list[str]:
     if PLATFORM == "linux":
         list_devices_str = run_command("v4l2-ctl --list-devices")
         all_video_device_names = [
@@ -26,12 +26,3 @@ def _get_device_names() -> list[str]:
 
     # Verify device
     return device_names
-
-
-def get_stream_mapping() -> dict[str, str]:
-    device_names = _get_device_names()
-    stream_mapping = {}
-    for idx, device_name in enumerate(device_names):
-        stream_name = f"camera{idx}"
-        stream_mapping[stream_name] = device_name
-    return stream_mapping

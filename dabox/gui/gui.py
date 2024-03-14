@@ -11,7 +11,7 @@ from viser.theme import TitlebarButton, TitlebarConfig, TitlebarImage
 
 from dabox.env import ROOT_DIR, WEBRTC_PORT
 from dabox.inference.yolov8.utils import draw_detections
-from dabox.util.devices import get_stream_mapping
+from dabox.util.devices import get_device_names
 
 
 def main():
@@ -46,7 +46,8 @@ def main():
         brand_color=(230, 180, 30),
     )
 
-    stream_names = list(get_stream_mapping().keys())
+    device_names = get_device_names()
+    stream_names = [f"camera{stream_id}" for stream_id in range(len(device_names))]
     markdown_source = (ROOT_DIR / "dabox/gui/assets/video_streams.mdx").read_text()
     markdown_source = markdown_source.replace("$WEBRTC_PORT", str(WEBRTC_PORT))
     markdown_source = markdown_source.replace("$STREAM_NAMES", str(stream_names))
