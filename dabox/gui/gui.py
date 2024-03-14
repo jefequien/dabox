@@ -1,8 +1,4 @@
-"""Camera Visualizer
-
-Connect to a RealSense camera, then visualize RGB-D readings as a point clouds. Requires
-pyrealsense2.
-"""
+"""Camera Visualizer"""
 
 import numpy as np
 import viser
@@ -17,7 +13,7 @@ from .theme import setup_viser_theme
 
 def main():
     """Start visualization server."""
-    server = viser.ViserServer(label="DaBox")
+    server = viser.ViserServer(label="DABOX")
     setup_viser_theme(server)
 
     device_names = get_device_names()
