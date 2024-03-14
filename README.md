@@ -11,7 +11,7 @@ Building robots is hard. If we want to live in a future where there are robots e
 Getting neural networks to run in real-time with low-latency on video streams is notoriously difficult. `dabox` is designed to be a ML-friendly, easy-to-install Python application with several features that every robot needs.
 
 ## Features available out of "dabox"
-- Low-latency inference with FFMpeg, ZMQ, and ONNX Runtime
+- Low-latency inference with [FFmpeg](https://ffmpeg.org/), [ZMQ](https://zeromq.org/), and [ONNX Runtime](https://onnxruntime.ai/)
 - Web-based 3D visualization by [viser](https://github.com/nerfstudio-project/viser)
 - Real-time RTSP, LL-HLS, WebRTC streams by [MediaMTX](https://github.com/bluenviron/mediamtx)
 - Automatic camera discovery
@@ -21,7 +21,7 @@ Getting neural networks to run in real-time with low-latency on video streams is
 
 ## Create environment
 
-`dabox` requires `python >= 3.10`. We recommend using conda to manage dependencies. Make sure to install [Conda](https://docs.conda.io/miniconda.html) before proceeding.
+`dabox` requires `python >= 3.10`. We recommend using conda to manage dependencies. Make sure to install [Miniconda](https://docs.conda.io/miniconda.html) before proceeding.
 
 ```bash
 conda create --name dabox -y python=3.10 && conda activate dabox
@@ -41,4 +41,6 @@ pip install -e .'[dev]'
 Start DaBox!
 ```bash
 dabox-up
+
+# Visit http://localhost:8080
 ```
