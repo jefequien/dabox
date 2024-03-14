@@ -35,9 +35,9 @@ class YOLOv8:
         return boxes, scores, class_ids
 
     def initialize_model(self, path):
-        self.session = onnxruntime.InferenceSession(
-            path, providers=onnxruntime.get_available_providers()
-        )
+        # providers = onnxruntime.get_available_providers()
+        providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+        self.session = onnxruntime.InferenceSession(path, providers=providers)
         # Get model info
         model_inputs = self.session.get_inputs()
         model_outputs = self.session.get_outputs()
@@ -47,9 +47,10 @@ class YOLOv8:
 
     def prepare_input(self, image):
         # Scale input pixel values to 0 to 1
-        input_img = image / 255.0
+        input_img = image.astype(np.float32)
+        input_img = input_img / 255.0
         input_img = input_img.transpose(2, 0, 1)
-        input_tensor = input_img[np.newaxis, :, :, :].astype(np.float32)
+        input_tensor = input_img[np.newaxis, :, :, :]
         return input_tensor
 
     def process_output(self, output):
