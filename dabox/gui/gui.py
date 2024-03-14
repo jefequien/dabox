@@ -7,44 +7,18 @@ pyrealsense2.
 import numpy as np
 import viser
 import zmq
-from viser.theme import TitlebarButton, TitlebarConfig, TitlebarImage
 
 from dabox.env import ROOT_DIR, WEBRTC_PORT
 from dabox.inference.yolov8.utils import draw_detections
 from dabox.util.devices import get_device_names
 
+from .theme import setup_viser_theme
+
 
 def main():
     """Start visualization server."""
     server = viser.ViserServer(label="DaBox")
-    buttons = (
-        TitlebarButton(
-            text="Github",
-            icon="GitHub",
-            href="https://github.com/jefequien/dabox",
-        ),
-        TitlebarButton(
-            text="Documentation",
-            icon="Description",
-            href="https://github.com/jefequien/dabox",
-        ),
-    )
-    image = TitlebarImage(
-        image_url_light="https://github.com/jefequien/dabox/blob/main/docs/dabox-logo.png?raw=true",
-        image_url_dark="https://github.com/jefequien/dabox/blob/main/docs/dabox-logo-dark.png?raw=true",
-        image_alt="DABOX Logo",
-        href="https://github.com/jefequien/dabox",
-    )
-    titlebar_theme = TitlebarConfig(buttons=buttons, image=image)
-    server.configure_theme(
-        titlebar_content=titlebar_theme,
-        control_layout="collapsible",
-        control_width="medium",
-        dark_mode=False,
-        show_logo=True,
-        show_share_button=False,
-        brand_color=(230, 180, 30),
-    )
+    setup_viser_theme(server)
 
     device_names = get_device_names()
     stream_names = [f"camera{stream_id}" for stream_id in range(len(device_names))]
