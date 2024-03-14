@@ -14,7 +14,7 @@ Getting neural networks to run with low-latency on video streams is notoriously 
 - Low-latency inference with [FFmpeg](https://ffmpeg.org/), [ZMQ](https://zeromq.org/), and [ONNX Runtime](https://onnxruntime.ai/)
 - Web-based 3D visualization by [viser](https://github.com/nerfstudio-project/viser)
 - Real-time RTSP, LL-HLS, WebRTC streams by [MediaMTX](https://github.com/bluenviron/mediamtx)
-- Automatic camera discovery
+- Automatic camera discovery and multi-camera support
 - Supported on Mac, Linux, and x86+dGPU systems
 
 # Installation
