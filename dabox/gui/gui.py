@@ -13,7 +13,7 @@ from .theme import setup_viser_theme
 
 def main():
     """Start visualization server."""
-    server = viser.ViserServer(label="DaBox")
+    server = viser.ViserServer(label="DABOX")
     setup_viser_theme(server)
 
     stream_names = [device_info.stream_name for device_info in get_device_infos()]

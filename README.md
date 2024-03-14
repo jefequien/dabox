@@ -38,7 +38,7 @@ pip install -e .'[dev]'
 
 # Usage
 
-Start DaBox!
+Start DABOX!
 ```bash
 dabox-up
 

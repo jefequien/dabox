@@ -33,8 +33,10 @@ class YOLOv8:
         return boxes, scores, class_ids
 
     def initialize_model(self, path):
-        # providers = onnxruntime.get_available_providers()
-        providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+        providers = onnxruntime.get_available_providers()
+        # Disable Tensorrt because it is slow to startup
+        if "TensorrtExecutionProvider" in providers:
+            providers.remove("TensorrtExecutionProvider")
         self.session = onnxruntime.InferenceSession(path, providers=providers)
         # Get model info
         model_inputs = self.session.get_inputs()
