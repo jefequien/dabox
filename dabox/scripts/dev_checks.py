@@ -4,6 +4,7 @@
 import tyro
 from rich import console
 
+from dabox.util.cli_logo import cli_logo
 from dabox.util.subprocess import run_command
 
 CONSOLE = console.Console()
@@ -52,4 +53,5 @@ def entrypoint():
 
 
 if __name__ == "__main__":
+    cli_logo()
     entrypoint()

@@ -30,17 +30,17 @@ def main():
         ),
     )
     image = TitlebarImage(
-        image_url_light="https://docs.nerf.studio/_static/imgs/logo.png",
-        image_url_dark="https://docs.nerf.studio/_static/imgs/logo-dark.png",
-        image_alt="DaBox Logo",
-        href="https://docs.nerf.studio/",
+        image_url_light="https://github.com/jefequien/dabox/blob/main/docs/dabox-logo.png?raw=true",
+        image_url_dark="https://github.com/jefequien/dabox/blob/main/docs/dabox-logo-dark.png?raw=true",
+        image_alt="DABOX Logo",
+        href="https://github.com/jefequien/dabox",
     )
     titlebar_theme = TitlebarConfig(buttons=buttons, image=image)
     server.configure_theme(
         titlebar_content=titlebar_theme,
         control_layout="collapsible",
         control_width="medium",
-        dark_mode=True,
+        dark_mode=False,
         show_logo=True,
         show_share_button=False,
         brand_color=(230, 180, 30),
