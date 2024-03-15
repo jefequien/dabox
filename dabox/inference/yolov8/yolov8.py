@@ -11,7 +11,7 @@ class YOLOv8:
         self.conf_threshold = conf_thres
         self.iou_threshold = iou_thres
 
-        model_path = DABOX_CACHE_DIR / "models" / model_name
+        model_path = DABOX_CACHE_DIR / "onnx" / model_name
         if not model_path.is_file():
             model_path.parent.mkdir(parents=True, exist_ok=True)
             download_url = "https://github.com/jefequien/dabox-research/releases/download/v0.2.0/yolov8n.onnx"

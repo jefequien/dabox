@@ -9,7 +9,7 @@ from .yolov8.yolov8 import YOLOv8
 
 
 def main():
-    yolov8_detector = YOLOv8("yolov8n.onnx", conf_thres=0.5, iou_thres=0.5)
+    yolov8_detector = YOLOv8("yolov8l.onnx", conf_thres=0.5, iou_thres=0.5)
 
     context = zmq.Context()
     # Subscribe to camera0
