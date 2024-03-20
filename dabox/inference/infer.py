@@ -1,15 +1,14 @@
 import numpy as np
+import onnxruntime
 import zmq
 from tqdm import tqdm
 
+from dabox.env import DABOX_CACHE_DIR
 from dabox.util.projection import backproject_depth
-
-from .yolov8.yolov8 import YOLOv8
+from dabox.util.subprocess import run_command
 
 
 def main():
-    yolov8_detector = YOLOv8("yolov8m.onnx", conf_thres=0.5, iou_thres=0.5)
-
     context = zmq.Context()
     # Subscribe to camera0
     sub_socket = context.socket(zmq.SUB)
@@ -21,13 +20,40 @@ def main():
     socket = context.socket(zmq.PUB)
     socket.bind("tcp://127.0.0.1:5555")
 
+    model_name = "dabox_yolov8m.onnx"
+    onnx_path = DABOX_CACHE_DIR / "onnx" / model_name
+    if not onnx_path.is_file():
+        onnx_path.parent.mkdir(parents=True, exist_ok=True)
+        download_url = f"https://github.com/jefequien/dabox-research/releases/download/v0.2.1/{model_name}"
+        run_command(f"wget -nc -O {onnx_path} {download_url}")
+
+    providers = onnxruntime.get_available_providers()
+    # Disable Tensorrt because it is slow to startup
+    if "TensorrtExecutionProvider" in providers:
+        providers.remove("TensorrtExecutionProvider")
+    session = onnxruntime.InferenceSession(onnx_path, providers=providers)
+    input_names = [model_input.name for model_input in session.get_inputs()]
+    output_names = [model_output.name for model_output in session.get_outputs()]
+
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     w, h = (640, 480)
     for _ in tqdm(range(10000000)):
         payload = sub_socket.recv()
         image = np.frombuffer(payload, np.uint8).reshape((h, w, 3))
 
-        boxes, scores, labels = yolov8_detector(image)
+        inputs = {
+            input_name: input_tensor
+            for input_name, input_tensor in zip(input_names, [image])
+        }
+        output_tensors = session.run(output_names, inputs)
+        outputs = {
+            output_name: output_tensor
+            for output_name, output_tensor in zip(output_names, output_tensors)
+        }
+
+        boxes = outputs["det_bboxes"][0]
+        scores = outputs["det_scores"][0]
+        labels = outputs["det_classes"][0]
 
         # Make fake point cloud
         colors = image[::8, ::8, :]  # Downsampling
