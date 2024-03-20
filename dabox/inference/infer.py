@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 import zmq
 from tqdm import tqdm
@@ -9,7 +8,7 @@ from .yolov8.yolov8 import YOLOv8
 
 
 def main():
-    yolov8_detector = YOLOv8("yolov8n.onnx", conf_thres=0.5, iou_thres=0.5)
+    yolov8_detector = YOLOv8("yolov8m.onnx", conf_thres=0.5, iou_thres=0.5)
 
     context = zmq.Context()
     # Subscribe to camera0
@@ -24,7 +23,6 @@ def main():
 
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     w, h = (640, 480)
-    depth_size = (80, 60)
     for _ in tqdm(range(10000000)):
         payload = sub_socket.recv()
         image = np.frombuffer(payload, np.uint8).reshape((h, w, 3))
@@ -32,7 +30,7 @@ def main():
         boxes, scores, labels = yolov8_detector(image)
 
         # Make fake point cloud
-        colors = cv2.resize(image, depth_size)
+        colors = image[::8, ::8, :]  # 8x downsampling
         depth = np.ones(colors.shape[:2]) * 10.0
         points = backproject_depth(depth, K).astype(np.float16)
         colors = colors.reshape((-1, 3)).astype(np.uint8)
