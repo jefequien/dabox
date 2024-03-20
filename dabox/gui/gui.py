@@ -32,6 +32,7 @@ def main():
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     while True:
         out = socket.recv_pyobj()
+        image = np.frombuffer(out["image_payload"], np.uint8).reshape((h, w, 3))
         boxes = out["boxes"]
         scores = out["scores"]
         labels = out["labels"]
@@ -45,6 +46,13 @@ def main():
             points=out["points"],
             colors=out["colors"],
             point_size=0.1,
+        )
+
+        server.add_box(
+            "box",
+            color=np.array([255, 0, 0]),
+            dimensions=np.array([0.1, 0.1, 0.1]),
+            position=np.array([0.0, 0.0, 1.0]),
         )
 
         # Place the frustum.

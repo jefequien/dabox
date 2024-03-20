@@ -30,12 +30,13 @@ def main():
         boxes, scores, labels = yolov8_detector(image)
 
         # Make fake point cloud
-        colors = image[::8, ::8, :]  # 8x downsampling
+        colors = image[::8, ::8, :]  # Downsampling
         depth = np.ones(colors.shape[:2]) * 10.0
         points = backproject_depth(depth, K).astype(np.float16)
         colors = colors.reshape((-1, 3)).astype(np.uint8)
 
         out = {
+            "image_payload": payload,
             "boxes": boxes,
             "scores": scores,
             "labels": labels,
