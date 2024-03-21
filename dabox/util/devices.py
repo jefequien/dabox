@@ -29,6 +29,7 @@ def get_device_infos() -> list[DeviceInfo]:
             device_info_str = run_command(f"v4l2-ctl --device={device_name} --all")
             if "Format Video Capture" in device_info_str:
                 device_names.append(device_name)
+        device_names = sorted(device_names)
 
         for idx, device_name in enumerate(device_names):
             device_info = DeviceInfo(
