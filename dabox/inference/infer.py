@@ -4,6 +4,7 @@ import zmq
 from tqdm import tqdm
 
 from dabox.env import DABOX_CACHE_DIR
+from dabox.util.logging import logger
 from dabox.util.projection import backproject_depth
 from dabox.util.subprocess import run_command
 
@@ -12,9 +13,11 @@ def main():
     context = zmq.Context()
 
     # Subscribe to cameras
-    camera_names = ["camera0", "camera1"]
+    camera_names = ["camera0"]  # , "camera1"]
+    zmq_ports = ["5556"]  # , "5557"]
+
     sub_sockets = []
-    for zmq_port in ["5556", "5557"]:
+    for zmq_port in zmq_ports:
         sub_socket = context.socket(zmq.SUB)
         sub_socket.subscribe("")
         sub_socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message
@@ -25,9 +28,10 @@ def main():
     socket = context.socket(zmq.PUB)
     socket.bind("tcp://127.0.0.1:5555")
 
-    model_name = "dabox_yolov8m.onnx"
+    model_name = "dabox_yolov8n.onnx"
     onnx_path = DABOX_CACHE_DIR / "onnx" / model_name
     if not onnx_path.is_file():
+        logger.info(f"Downloading {model_name}")
         onnx_path.parent.mkdir(parents=True, exist_ok=True)
         download_url = f"https://github.com/jefequien/dabox-research/releases/download/v0.2.1/{model_name}"
         run_command(f"wget -nc -O {onnx_path} {download_url}")

@@ -1,12 +1,12 @@
 from pathlib import Path
 
-from dabox.env import DABOX_CACHE_DIR, FFMPEG_INPUT_FORMAT, PLATFORM
+from dabox.env import ASSETS_DIR, DABOX_CACHE_DIR, FFMPEG_INPUT_FORMAT, PLATFORM
 from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
 from dabox.util.subprocess import run_command
 
 
-def install_mediamtx(mtx_version="v1.6.0") -> Path:
+def _install_mediamtx(mtx_version="v1.6.0") -> Path:
     mtx_install_dir = DABOX_CACHE_DIR / f"mediamtx_{mtx_version}"
     mediamtx_path = mtx_install_dir / "mediamtx"
     if mediamtx_path.is_file():
@@ -33,6 +33,13 @@ def install_mediamtx(mtx_version="v1.6.0") -> Path:
     else:
         raise ValueError(f"Platform not recognized: {PLATFORM}")
     return mediamtx_path
+
+
+def get_mediamtx_command() -> str:
+    mediamtx_path = _install_mediamtx()
+    mediamtx_config_path = ASSETS_DIR / "mediamtx.yml"
+    mediamtx_command = f"{mediamtx_path} {mediamtx_config_path}"
+    return mediamtx_command
 
 
 def get_ffmpeg_commands() -> dict[str, str]:
