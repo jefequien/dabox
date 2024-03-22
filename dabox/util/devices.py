@@ -57,5 +57,4 @@ def get_device_infos() -> list[DeviceInfo]:
             device_infos.append(device_info)
     else:
         raise ValueError(f"Platform not recognized: {PLATFORM}")
-
     return device_infos
