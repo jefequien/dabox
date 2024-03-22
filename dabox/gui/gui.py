@@ -32,40 +32,37 @@ def main():
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     while True:
         out = socket.recv_pyobj()
-        boxes = out["boxes"]
-        scores = out["scores"]
-        labels = out["labels"]
+        for idx, camera_out in enumerate(out):
+            boxes = camera_out["boxes"]
+            scores = camera_out["scores"]
+            labels = camera_out["labels"]
+            camera_pose = camera_out["camera_pose"]
+            points = camera_out["points"]
+            colors = camera_out["colors"]
 
-        image = np.zeros((h, w, 3), dtype=np.uint8)
-        debug_vis = draw_detections(image, boxes, scores, labels)
+            image = np.zeros((h, w, 3), dtype=np.uint8)
+            image_vis = draw_detections(image, boxes, scores, labels)
 
-        # Place point cloud.
-        server.add_point_cloud(
-            "/points_main",
-            points=out["points"],
-            colors=out["colors"],
-            point_size=0.1,
-        )
+            # Place point cloud.
+            server.add_point_cloud(
+                f"/{idx}/points_main",
+                points=points,
+                colors=colors,
+                point_size=0.1,
+            )
 
-        # Place the frustum.
-        fov = 2 * np.arctan2(h / 2, K[1, 1] * h)
-        aspect = w / h
-        server.add_camera_frustum(
-            "/frames/t0/frustum",
-            fov=fov,
-            aspect=aspect,
-            scale=0.15,
-            image=debug_vis,
-            wxyz=np.array([1.0, 0.0, 0.0, 0.0]),
-            position=np.zeros(3),
-        )
-
-        # Add some axes.
-        server.add_frame(
-            "/frames/t0/frustum/axes",
-            axes_length=0.05,
-            axes_radius=0.005,
-        )
+            # Place the frustum.
+            fov = 2 * np.arctan2(h / 2, K[1, 1] * h)
+            aspect = w / h
+            server.add_camera_frustum(
+                f"/{idx}/frames/t0/frustum",
+                fov=fov,
+                aspect=aspect,
+                scale=0.15,
+                image=image_vis,
+                wxyz=np.array([1.0, 0.0, 0.0, 0.0]),
+                position=camera_pose[:3, 3],
+            )
 
 
 if __name__ == "__main__":

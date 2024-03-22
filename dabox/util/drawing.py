@@ -90,6 +90,10 @@ colors = rng.uniform(0, 255, size=(len(class_names), 3))
 
 
 def draw_detections(image, boxes, scores, class_ids, mask_alpha=0.3):
+    img_height, img_width = image.shape[:2]
+    boxes[..., 0::2] *= img_width
+    boxes[..., 1::2] *= img_height
+
     det_img = image.copy()
 
     img_height, img_width = image.shape[:2]
