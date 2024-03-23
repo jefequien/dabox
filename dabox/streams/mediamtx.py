@@ -50,10 +50,14 @@ def get_ffmpeg_commands() -> dict[str, str]:
 
     ffmpeg_commands = {}
     for device_info in device_infos:
+        videos_dir = DABOX_CACHE_DIR / "videos" / device_info.stream_name
+        videos_dir.mkdir(parents=True, exist_ok=True)
+
         ffmpeg_cmd = (
             f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel fatal -framerate {device_info.frame_rate} -video_size {device_info.video_size[0]}x{device_info.video_size[1]} -pix_fmt {device_info.pixel_format} -i {device_info.name}"
             + f" -preset ultrafast -tune zerolatency -s {network_size[0]}x{network_size[1]} -pix_fmt {network_pix_fmt} -pkt_size {network_pkt_size} -f rawvideo zmq:tcp://127.0.0.1:{device_info.zmq_port}"
-            + f" -preset ultrafast -tune zerolatency -b:v 1M -vcodec libx264 -bf 0 -f rtsp rtsp://localhost:8554/{device_info.stream_name}"
+            + f" -preset ultrafast -tune zerolatency -vcodec libx264 -b:v 1M -bf 0 -f rtsp rtsp://localhost:8554/{device_info.stream_name}"
+            + f" -vcodec mjpeg -b:v 1M -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1 -segment_atclocktime 1 -strftime 1 {videos_dir}/%Y-%m-%d-%H-%M-%S.mp4"
         )
         ffmpeg_commands[device_info.name] = ffmpeg_cmd
     return ffmpeg_commands

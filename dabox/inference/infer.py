@@ -4,18 +4,19 @@ import zmq
 from tqdm import tqdm
 
 from dabox.env import DABOX_CACHE_DIR
+from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
 from dabox.util.projection import backproject_depth
 from dabox.util.subprocess import run_command
 
 
 def main():
+    device_infos = get_device_infos()
+    camera_names = [device_info.stream_name for device_info in device_infos]
+    zmq_ports = [device_info.zmq_port for device_info in device_infos]
+
     context = zmq.Context()
-
-    # Subscribe to cameras
-    camera_names = ["camera0"]  # , "camera1"]
-    zmq_ports = ["5556"]  # , "5557"]
-
+    # Subscribe zmq ports
     sub_sockets = []
     for zmq_port in zmq_ports:
         sub_socket = context.socket(zmq.SUB)
@@ -23,8 +24,7 @@ def main():
         sub_socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message
         sub_socket.connect(f"tcp://127.0.0.1:{zmq_port}")
         sub_sockets.append(sub_socket)
-
-    # Bind to publish port
+    # Publish zmq ports
     socket = context.socket(zmq.PUB)
     socket.bind("tcp://127.0.0.1:5555")
 
@@ -40,6 +40,9 @@ def main():
     # Disable Tensorrt because it is slow to startup
     if "TensorrtExecutionProvider" in providers:
         providers.remove("TensorrtExecutionProvider")
+    # Disable CoreMLExecutionProvider because it doesn't handle empty tensors
+    if "CoreMLExecutionProvider" in providers:
+        providers.remove("CoreMLExecutionProvider")
     session = onnxruntime.InferenceSession(onnx_path, providers=providers)
     input_names = [model_input.name for model_input in session.get_inputs()]
     output_names = [model_output.name for model_output in session.get_outputs()]
