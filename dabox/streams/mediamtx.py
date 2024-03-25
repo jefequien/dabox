@@ -1,6 +1,12 @@
 from pathlib import Path
 
-from dabox.env import ASSETS_DIR, DABOX_CACHE_DIR, FFMPEG_INPUT_FORMAT, PLATFORM
+from dabox.env import (
+    ASSETS_DIR,
+    DABOX_CACHE_DIR,
+    DABOX_VIDEOS_DIR,
+    FFMPEG_INPUT_FORMAT,
+    PLATFORM,
+)
 from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
 from dabox.util.subprocess import run_command
@@ -49,14 +55,14 @@ def get_ffmpeg_commands() -> dict[str, str]:
 
     ffmpeg_commands = {}
     for device_info in device_infos:
-        videos_dir = DABOX_CACHE_DIR / "videos" / device_info.stream_name
-        videos_dir.mkdir(parents=True, exist_ok=True)
+        stream_videos_dir = DABOX_VIDEOS_DIR / device_info.stream_name
+        stream_videos_dir.mkdir(parents=True, exist_ok=True)
 
         ffmpeg_cmd = (
             f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel fatal -framerate {device_info.frame_rate} -video_size {device_info.video_size[0]}x{device_info.video_size[1]} -pix_fmt {device_info.pixel_format} -i {device_info.name}"
             + f" -preset ultrafast -tune zerolatency -vcodec libx264 -b:v 1M -bf 0 -f rtsp rtsp://localhost:8554/{device_info.stream_name}"
             + f" -pix_fmt rgb24 -s {network_size[0]}x{network_size[1]} -pkt_size {network_pkt_size} -f rawvideo zmq:tcp://127.0.0.1:{device_info.zmq_port}"
-            + f" -vcodec mjpeg -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1 -segment_atclocktime 1 -strftime 1 {videos_dir}/%Y-%m-%d-%H-%M-%S.mp4"
+            + f" -vcodec mjpeg -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1 -segment_atclocktime 1 -strftime 1 {stream_videos_dir}/%Y-%m-%d-%H-%M-%S.mp4"
         )
         ffmpeg_commands[device_info.name] = ffmpeg_cmd
     return ffmpeg_commands

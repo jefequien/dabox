@@ -1,5 +1,7 @@
 from dabox.util.logging import logger
-from dabox.util.subprocess import run_command
+from dabox.util.subprocess import (
+    run_command,
+)
 
 
 def main():
@@ -12,5 +14,8 @@ def main():
         ports.append(5555 + i)
 
     for port in ports:
-        logger.info(f"Killing processes on port: {port}")
-        run_command(f"kill $(lsof -t -i:{port})", continue_on_fail=True)
+        logger.info(f"Checking for processes on port: {port}")
+        lsof_output = run_command(f"lsof -t -i:{port}", continue_on_fail=True)
+        if len(lsof_output) != 0:
+            logger.info(f"Killing processes: {lsof_output}")
+            run_command(f"kill {lsof_output})", continue_on_fail=True)

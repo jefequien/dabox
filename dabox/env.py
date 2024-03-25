@@ -12,6 +12,7 @@ ROOT_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 HOME_DIR = Path(os.path.expanduser("~"))
 
 DABOX_CACHE_DIR = HOME_DIR / ".cache" / "dabox"
+DABOX_VIDEOS_DIR = HOME_DIR / "Downloads" / "dabox_videos"
 ASSETS_DIR = ROOT_DIR / "dabox" / "assets"
 
 PLATFORM = "linux" if "Linux" in platform.platform() else "osx"

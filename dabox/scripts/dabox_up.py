@@ -58,7 +58,3 @@ def main():
                 logger.info(f"Killed {process_name}")
 
         logger.info("DABOX services shut down.")
-
-
-if __name__ == "__main__":
-    main()
