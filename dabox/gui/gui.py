@@ -3,6 +3,7 @@
 import numpy as np
 import viser
 import zmq
+from transformations import quaternion_from_matrix
 
 from dabox.env import ASSETS_DIR, WEBRTC_PORT
 from dabox.util.devices import get_device_infos
@@ -23,20 +24,21 @@ def main():
     server.add_gui_markdown(content=markdown_source)
 
     context = zmq.Context()
-    socket = context.socket(zmq.SUB)
-    socket.subscribe("")
-    socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message
-    socket.connect("tcp://127.0.0.1:5555")
+    sub_socket = context.socket(zmq.SUB)
+    sub_socket.subscribe("")
+    sub_socket.setsockopt(zmq.LINGER, 0)  # Stop immediately after socket is closed
+    sub_socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message
+    sub_socket.connect("tcp://127.0.0.1:5555")
 
     w, h = (640, 480)
     K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     while True:
-        out = socket.recv_pyobj()
+        out = sub_socket.recv_pyobj()
         for idx, camera_out in enumerate(out):
             boxes = camera_out["boxes"]
             scores = camera_out["scores"]
             labels = camera_out["labels"]
-            camera_pose = camera_out["camera_pose"]
+            camera_mat = camera_out["camera_mat"]
             points = camera_out["points"]
             colors = camera_out["colors"]
 
@@ -60,8 +62,8 @@ def main():
                 aspect=aspect,
                 scale=0.15,
                 image=image_vis,
-                wxyz=np.array([1.0, 0.0, 0.0, 0.0]),
-                position=camera_pose[:3, 3],
+                wxyz=quaternion_from_matrix(camera_mat),
+                position=camera_mat[:3, 3],
             )
 
 

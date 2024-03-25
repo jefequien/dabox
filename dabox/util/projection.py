@@ -25,3 +25,12 @@ def backproject_depth(depth: np.ndarray, K: np.ndarray) -> np.ndarray:
     y = (v - k_scaled[1, 2]) * z / k_scaled[1, 1]
     points: np.ndarray = np.stack([x, y, z], axis=-1).reshape(-1, 3)
     return points
+
+
+def transform_points(points: np.ndarray, mat: np.ndarray) -> np.ndarray:
+    n = len(points)
+    points_tf = np.hstack((points, np.ones((n, 1), dtype=points.dtype)))
+    points_tf = np.matmul(mat, points_tf.T).T
+    points_tf = points_tf[:, :3]
+    assert points.dtype == points_tf.dtype
+    return points_tf
