@@ -8,35 +8,44 @@ from transformations import euler_matrix
 class CameraCalibration:
     K: np.ndarray
     mat: np.ndarray
+    image_size: tuple[int, int]
 
 
 @dataclass
 class VehicleCalibration:
     cameras: dict[str, CameraCalibration]
-    image_size: tuple[int, int]
 
 
-def get_default_calibration(camera_names: list[str]) -> VehicleCalibration:
+def get_default_calibration(
+    camera_names: list[str], image_sizes: list[tuple[int, int]]
+) -> VehicleCalibration:
     cameras = {}
-    for camera_name in camera_names:
+    for camera_name, image_size in zip(camera_names, image_sizes):
         if camera_name == "camera0":
             camera_calibration = CameraCalibration(
                 K=np.array(
-                    [[0.5, 0.0, 0.5], [0.0, 0.5 * (640 / 480), 0.5], [0.0, 0.0, 1.0]]
+                    [
+                        [0.5, 0.0, 0.5],
+                        [0.0, 0.5 * (image_size[0] / image_size[1]), 0.5],
+                        [0.0, 0.0, 1.0],
+                    ]
                 ),
                 mat=np.eye(4),
+                image_size=image_size,
             )
         else:
             camera_calibration = CameraCalibration(
                 K=np.array(
-                    [[0.5, 0.0, 0.5], [0.0, 0.5 * (640 / 480), 0.5], [0.0, 0.0, 1.0]]
+                    [
+                        [0.5, 0.0, 0.5],
+                        [0.0, 0.5 * (image_size[0] / image_size[1]), 0.5],
+                        [0.0, 0.0, 1.0],
+                    ]
                 ),
                 mat=euler_matrix(0, np.pi / 2, 0),
+                image_size=image_size,
             )
         cameras[camera_name] = camera_calibration
 
-    calibration = VehicleCalibration(
-        cameras=cameras,
-        image_size=(640, 480),
-    )
+    calibration = VehicleCalibration(cameras=cameras)
     return calibration

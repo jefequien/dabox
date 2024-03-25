@@ -16,6 +16,9 @@ def main():
     camera_names = [device_info.stream_name for device_info in device_infos]
     zmq_ports = [device_info.zmq_port for device_info in device_infos]
 
+    image_sizes = [device_info.video_size for device_info in device_infos]
+    calibration = get_default_calibration(camera_names, image_sizes)
+
     context = zmq.Context()
     # Subscribe zmq ports
     sub_sockets = []
@@ -49,19 +52,15 @@ def main():
     input_names = [model_input.name for model_input in session.get_inputs()]
     output_names = [model_output.name for model_output in session.get_outputs()]
 
-    calibration = get_default_calibration(camera_names)
-    w, h = calibration.image_size
     for _ in tqdm(range(10000000)):
-        images = []
-        for sub_socket in sub_sockets:
-            payload = sub_socket.recv()
-            image = np.frombuffer(payload, np.uint8).reshape((h, w, 3))
-            images.append(image)
+        payloads = [sub_socket.recv() for sub_socket in sub_sockets]
 
-        out = []
-        for camera_name, image in zip(camera_names, images):
-            camera_mat = calibration.cameras[camera_name].mat
+        out = {}
+        for camera_name, payload in zip(camera_names, payloads):
+            w, h = calibration.cameras[camera_name].image_size
             K = calibration.cameras[camera_name].K
+            camera_mat = calibration.cameras[camera_name].mat
+            image = np.frombuffer(payload, np.uint8).reshape((h, w, 3))
 
             inputs = {
                 input_name: input_tensor
@@ -83,7 +82,9 @@ def main():
             points = transform_points(points, camera_mat)
             colors = colors.reshape((-1, 3))
 
-            camera_out = {
+            out[camera_name] = {
+                "image_size": (w, h),
+                "K": K,
                 "camera_mat": camera_mat,
                 "boxes": boxes,
                 "scores": scores,
@@ -91,5 +92,4 @@ def main():
                 "points": points,
                 "colors": colors,
             }
-            out.append(camera_out)
         socket.send_pyobj(out)

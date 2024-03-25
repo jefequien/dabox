@@ -35,7 +35,7 @@ def get_device_infos() -> list[DeviceInfo]:
             device_info = DeviceInfo(
                 name=device_name,
                 frame_rate=30,
-                video_size=(1280, 720),
+                video_size=(640, 480),
                 pixel_format="mjpeg",
                 stream_name=f"camera{idx}",
                 zmq_port=5556 + idx,
@@ -49,7 +49,7 @@ def get_device_infos() -> list[DeviceInfo]:
             device_info = DeviceInfo(
                 name=device_name,
                 frame_rate=30,
-                video_size=(1280, 720),
+                video_size=(640, 480),
                 pixel_format="yuyv422",
                 stream_name=f"camera{idx}",
                 zmq_port=5556 + idx,

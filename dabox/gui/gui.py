@@ -30,15 +30,15 @@ def main():
     sub_socket.setsockopt(zmq.CONFLATE, 1)  # Always get last message
     sub_socket.connect("tcp://127.0.0.1:5555")
 
-    w, h = (640, 480)
-    K = np.array([[0.5, 0.0, 0.5], [0.0, 0.667, 0.5], [0.0, 0.0, 1.0]])
     while True:
         out = sub_socket.recv_pyobj()
-        for idx, camera_out in enumerate(out):
+        for camera_name, camera_out in out.items():
+            w, h = camera_out["image_size"]
+            K = camera_out["K"]
+            camera_mat = camera_out["camera_mat"]
             boxes = camera_out["boxes"]
             scores = camera_out["scores"]
             labels = camera_out["labels"]
-            camera_mat = camera_out["camera_mat"]
             points = camera_out["points"]
             colors = camera_out["colors"]
 
@@ -47,7 +47,7 @@ def main():
 
             # Place point cloud.
             server.add_point_cloud(
-                f"/{idx}/points_main",
+                f"/{camera_name}/points_main",
                 points=points,
                 colors=colors,
                 point_size=0.1,
@@ -55,11 +55,10 @@ def main():
 
             # Place the frustum.
             fov = 2 * np.arctan2(h / 2, K[1, 1] * h)
-            aspect = w / h
             server.add_camera_frustum(
-                f"/{idx}/frames/t0/frustum",
+                f"/{camera_name}/frames/t0/frustum",
                 fov=fov,
-                aspect=aspect,
+                aspect=w / h,
                 scale=0.15,
                 image=image_vis,
                 wxyz=quaternion_from_matrix(camera_mat),
