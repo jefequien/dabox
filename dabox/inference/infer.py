@@ -2,9 +2,8 @@ import numpy as np
 import onnxruntime
 import zmq
 from tqdm import tqdm
-from transformations import euler_matrix
 
-from dabox.dataclasses.calibration import CameraCalibration, VehicleCalibration
+from dabox.calibration.dataclasses import get_default_calibration
 from dabox.env import DABOX_CACHE_DIR
 from dabox.util.devices import get_device_infos
 from dabox.util.logging import logger
@@ -50,24 +49,7 @@ def main():
     input_names = [model_input.name for model_input in session.get_inputs()]
     output_names = [model_output.name for model_output in session.get_outputs()]
 
-    calibration = VehicleCalibration(
-        cameras={
-            "camera0": CameraCalibration(
-                K=np.array(
-                    [[0.5, 0.0, 0.5], [0.0, 0.5 * (640 / 480), 0.5], [0.0, 0.0, 1.0]]
-                ),
-                mat=np.eye(4),
-            ),
-            "camera1": CameraCalibration(
-                K=np.array(
-                    [[0.5, 0.0, 0.5], [0.0, 0.5 * (640 / 480), 0.5], [0.0, 0.0, 1.0]]
-                ),
-                mat=euler_matrix(0, np.pi / 2, 0),
-            ),
-        },
-        image_size=(640, 480),
-    )
-
+    calibration = get_default_calibration(camera_names)
     w, h = calibration.image_size
     for _ in tqdm(range(10000000)):
         images = []
@@ -78,8 +60,8 @@ def main():
 
         out = []
         for camera_name, image in zip(camera_names, images):
-            camera_mat = calibration[camera_name].mat
-            K = calibration[camera_name].K
+            camera_mat = calibration.cameras[camera_name].mat
+            K = calibration.cameras[camera_name].K
 
             inputs = {
                 input_name: input_tensor
