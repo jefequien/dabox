@@ -62,7 +62,7 @@ def get_ffmpeg_commands() -> dict[str, str]:
             f"ffmpeg -f {FFMPEG_INPUT_FORMAT} -loglevel fatal -framerate {device_info.frame_rate} -video_size {device_info.video_size[0]}x{device_info.video_size[1]} -pix_fmt {device_info.pixel_format} -i {device_info.name}"
             + f" -preset ultrafast -tune zerolatency -vcodec libx264 -b:v 1M -bf 0 -f rtsp rtsp://localhost:8554/{device_info.stream_name}"
             + f" -pix_fmt rgb24 -s {image_size[0]}x{image_size[1]} -pkt_size {image_pkt_size} -f rawvideo zmq:tcp://127.0.0.1:{device_info.zmq_port}"
-            + f" -vcodec mjpeg -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1 -segment_atclocktime 1 -strftime 1 {stream_videos_dir}/%Y-%m-%d-%H-%M-%S.mp4"
+            + f" -vcodec mjpeg -b:v 10M -f segment -segment_time 60 -segment_format mp4 -reset_timestamps 1 -segment_atclocktime 1 -strftime 1 {stream_videos_dir}/%Y-%m-%d-%H-%M-%S.mp4"
         )
         ffmpeg_commands[device_info.name] = ffmpeg_cmd
     return ffmpeg_commands
